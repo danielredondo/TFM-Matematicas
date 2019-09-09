@@ -1,0 +1,1155 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+\mode<presentation> {
+\usetheme{Madrid}
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{outlines}
+\usepackage{setspace}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{multirow}
+\usepackage{tikz}
+\usepackage{appendixnumberbeamer}
+
+\setbeamertemplate{button}{\tikz
+  \node[
+  inner xsep=10pt,
+  draw=structure!80,
+  fill=structure!50,
+  rounded corners=4pt]  {\normalsize\insertbuttontext};}
+
+\setbeamertemplate{itemize items}[square]
+\setbeamertemplate{enumerate items}[default]
+\setbeamertemplate{navigation symbols}{} % Remove navigation symbols
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Modelización de la Estimación de Cáncer]{Modelización Matemática\\ de la Estimación de Incidencia de Cáncer} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author[Daniel Redondo-Sánchez]{\textbf{Daniel Redondo-Sánchez}}
+
+\date[11 Julio 2019]{} 
+
+\institute[] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{\scriptsize{
+\vspace{10pt}
+Máster Universitario en Matemáticas\\ Curso 2018/2019\\
+\vspace{10pt}
+Tutores: \newline \textbf{Francisco Javier Alonso Morales} \newline \textbf{Miguel Rodríguez Barranco}
+
+}
+% Your institution for the title page
+\vspace{0pt}
+
+% Logos
+\begin{columns}
+	\begin{column}{0.17\textwidth}
+		\begin{figure}
+			\centering
+			\includegraphics[width=1\textwidth]{logos/mm.pdf}
+		\end{figure}
+	\end{column}
+	\begin{column}{0.5\textwidth}
+		\begin{figure}
+			\centering
+			\includegraphics[width=1\textwidth]{logos/logougr.png}
+		\end{figure}
+	\end{column}
+\end{columns}
+
+}
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{}
+
+\Large{\textbf{Índice}}\\[2ex]
+\normalsize
+\begin{enumerate}
+	\item \textbf{Cáncer: Incidencia y Mortalidad} \\[2ex]
+	\item Método Razón Incidencia Mortalidad \\[2ex]
+	\item Validación del método Razón Incidencia Mortalidad \\[2ex]
+	\item Suavizado exponencial \\[2ex]
+	\item Estimaciones de la Incidencia de Cáncer en 2018 para Granada \\[2ex]
+	\item Líneas abiertas de trabajo
+\end{enumerate}
+
+\end{frame}
+%--------------------------------------------------
+
+\section{Cáncer: Incidencia y Mortalidad}
+\begin{frame}\frametitle{Cáncer: incidencia y mortalidad}
+
+	\begin{block}{Cáncer: un problema mundial de salud pública} 
+		\begin{itemize}
+			\item El cáncer es un \textbf{conjunto de enfermedades} caracterizadas por una división incontrolada de las células. \\[2ex] 
+			\item Es un \textbf{importante problema de salud pública}: 18,1 millones de casos nuevos y 9,6 millones de defunciones en todo el mundo en 2018. \\[2ex]
+			\item Para conocer la incidencia en un área geográfica definida es necesario un \textbf{Registro de Cáncer de Población}. 
+		\end{itemize}
+	\end{block}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.5\textwidth]{Figuras/mapa_redecan}\\
+		\tiny Registros de Cáncer de Población en España
+	\end{figure}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}\frametitle{Cáncer: incidencia y mortalidad}
+
+	\vspace{-10pt}
+	
+	\begin{columns}
+		\begin{column}{0.33\textwidth}
+			\begin{figure}
+				\centering
+				\includegraphics[width=1\textwidth]{logos/rcg}
+			\end{figure}
+		\end{column}
+		\begin{column}{0.33\textwidth}
+		\begin{figure}
+			\centering
+			\includegraphics[width=1\textwidth]{Figuras/foto_escuela}
+		\end{figure}
+	\end{column}
+
+		\begin{column}{0.33\textwidth}
+			\begin{figure}
+				\centering
+				\includegraphics[width=1\textwidth]{logos/easp}
+			\end{figure}
+		\end{column}
+	\end{columns}
+
+	\vspace{0pt}
+
+	\begin{block}{Registro de Cáncer de Granada}
+		\begin{itemize}
+			\item El Registro de Cáncer de Granada se crea en \textbf{1985}, y registra todos los casos de cáncer nuevos diagnosticados en la provincia de Granada. \\[2ex]
+			\item En la actualidad cuenta con \textbf{más de 125.000 casos nuevos} de cáncer. \\[2ex] 
+			\item Está integrado en las instituciones sobre cáncer de más alto prestigio internacional (IACR, ENCR, IARC), y sus datos son de \textbf{alta calidad}, estando acreditados por la Organización Mundial de la Salud. \\[2ex] 
+		\end{itemize}
+	\end{block}
+
+\end{frame}
+
+%--------------------------------------------------
+\begin{frame}\frametitle{Cáncer: incidencia y mortalidad}
+
+	\begin{block}{Indicadores epidemiológicos}
+		Para medir el impacto del cáncer en una población se utilizan los siguientes indicadores:\\
+		\begin{enumerate}
+			\item \textbf{Incidencia. Riesgo de presentar cáncer.}\\[2ex]
+			\item \textbf{Mortalidad. Riesgo de morir por cáncer.}\\[2ex]
+			\item Prevalencia. Carga asistencial de la enfermedad.\\[2ex]
+			\item Supervivencia. Historia natural de la enfermedad y efectividad del tratamiento. \\[2ex]
+		\end{enumerate}
+	\end{block}
+
+\end{frame}
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Cáncer: incidencia y mortalidad}
+
+	\begin{block}{Indicadores para la incidencia}
+		
+		El indicador más básico es el \textbf{número de casos nuevos de cáncer}.\\[2ex]
+		
+		Para tener en cuenta el tamaño de la población, o su distribución por edad, se calculan otros indicadores como \textbf{tasas brutas}, \textbf{tasas específicas por edad}, o \textbf{tasas estandarizadas por edad}.
+	\end{block}
+
+	\begin{block}{Indicadores para la mortalidad}
+		Se pueden calcular las mismas tasas que para la incidencia, cambiando el número de casos nuevos por el número de \textbf{defunciones por cáncer}.
+	\end{block}
+\end{frame}
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Cáncer: incidencia y mortalidad}
+	\begin{block}{Razón incidencia mortalidad}
+		La \textbf{razón incidencia mortalidad} (RIM) se define como el cociente entre el número de casos nuevos de cáncer y el número de defunciones por cáncer.
+		
+		\vspace{0pt}
+		$$\text{Razón incidencia mortalidad} = \frac{\text{Casos nuevos de cáncer}}{\text{Defunciones por cáncer}}$$ \\[1ex]
+		
+		Por lo general, la razón incidencia-mortalidad oscila entre 0 y 1, aunque puede ser mayor de 1 en cánceres muy letales (pulmón, páncreas, ...).\\[2ex]
+		
+		A veces es malinterpretada como supervivencia, aunque la mortalidad se refiere a un grupo distinto de pacientes que la incidencia.
+	\end{block}
+
+\end{frame}
+
+%--------------------------------------------------
+\begin{frame}\frametitle{}
+
+\Large{\textbf{Índice}}\\[2ex]
+\normalsize
+\begin{enumerate}
+	\item Cáncer: Incidencia y Mortalidad \\[2ex]
+	\item \textbf{Método Razón Incidencia Mortalidad} \\[2ex]
+	\item Validación del método Razón Incidencia Mortalidad \\[2ex]
+	\item Suavizado exponencial \\[2ex]
+	\item  Estimaciones de la Incidencia de Cáncer en 2018 para Granada \\[2ex]
+	\item Líneas abiertas de trabajo
+\end{enumerate}
+
+\end{frame}
+
+%--------------------------------------------------
+\section{Método Razón Incidencia Mortalidad}
+\begin{frame}\frametitle{Método Razón Incidencia Mortalidad}
+
+	\begin{block}{Estimaciones de la incidencia}
+		Las estimaciones de la incidencia de cáncer son \textbf{necesarias para conocer la carga actual de enfermedad} en una población, ya que los Registros de Cáncer tienen un retraso de unos 4-5 años.\\[2ex]
+		
+	El método razón incidencia mortalidad (\textbf{método RIM}) es el más adecuado al contexto de España, donde se dispone de varios Registros de Cáncer de Población regionales, y un Registro de Mortalidad a nivel nacional.
+	\end{block}
+\vspace{-5pt}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.8\textwidth]{Figuras/eleccion_metodo}
+	\end{figure}
+\vspace{-15pt}
+\centering {\tiny An assessment of GLOBOCAN methods for deriving national estimates of cancer incidence. Sebastien Antoni et al. 2016}
+
+
+\end{frame}
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Método Razón Incidencia Mortalidad}
+
+		\begin{block}{Fase 1. Proyección de la mortalidad}
+			Se proyecta la mortalidad para el año objetivo usando el método \textbf{NORDPRED}:
+			
+			$$R_{ap} = {(A_a + D\cdot p + P_p + C_c)}^5$$ donde:
+			
+			\begin{itemize}
+				\item $R_{ap}$ es la mortalidad para un grupo de edad ($a$) y un periodo ($p$) específicos
+				\item $A_a$ es la componente de la edad para un grupo de edad concreto $a$
+				\item $D$ es el parámetro de deriva que refleja la componente lineal de la tendencia
+				\item $P_p$ es la componente no lineal de un periodo específico $p$
+				\item $C_c$ es la componente no lineal de una cohorte específica $c$
+			\end{itemize}
+		\end{block}
+
+
+\end{frame}
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Método Razón Incidencia Mortalidad}
+
+	\begin{block}{Fase 2. Modelado RIM}
+		Se modela la RIM usando un \textbf{modelo lineal generalizado mixto} (GLMM)
+		$$log(N) =  log(D) + \beta_0 + \beta_1 \cdot y + \beta_2 \cdot y^2  + \sum_{i = 1}^{4} \alpha_i \cdot a_i $$ donde:
+		\begin{itemize}
+			\item $N$ = número de casos incidentes 
+			\item $D$ = número de defunciones 
+			\item $a_i$ = Grupos de edad ($a_i$, con $i = 1, \hdots, 4$)
+			\item $y$ = Año de diagnóstico
+		\end{itemize}
+	
+	\vspace{10pt}
+	Equivalentemente, $RIM = \mathrm e^{\beta_0 + \beta_1 \cdot y + \beta_2 \cdot y^2 + \sum_{i = 1}^{4} \alpha_i \cdot a_i} $
+
+	\end{block}
+\end{frame}
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Método Razón Incidencia Mortalidad}
+	\begin{block}{Fase 2. Modelado RIM}
+		
+		La estimación de los parámetros se realiza mediante \textbf{cadenas de Markov Montecarlo (MCMC)}.\\[2ex]
+		
+		Se utilizaron los paquetes de R \texttt{BRugs} v.0.9-0 y \texttt{R2WinBUGS} v.2.1-21, y el software \textbf{OpenBUGS} v.3.2.3., la versión \textit{open source} de WinBugs.\\[2ex]
+		
+		Se realizan 3 cadenas de simulaciones con 10.000 ciclos de calentamiento y 40.000 ciclos para el análisis. 1 de cada 5 ciclos fue seleccionado para obtener \textbf{24.000 estimaciones de los parámetros}.\\[2ex]
+		
+	Se pueden considerar los percentiles 2,5 y 97,5 para obtener un \textbf{intervalo de credibilidad al 95\%}.\\
+		
+	\end{block}
+
+\end{frame}
+
+
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Método Razón Incidencia Mortalidad}
+
+	\begin{block}{Fase 2. Modelado RIM. Escenarios}
+		\begin{itemize}
+			\item \textbf{C1}. Se asume que la RIM sigue una tendencia constante, e igual a la RIM del \textbf{último año} del que se conoce la incidencia.\\[2ex]
+			\item \textbf{L}. Se asume que la RIM sigue una tendencia \textbf{lineal}.\\[2ex]
+			\item \textbf{Q}. Se asume que la RIM sigue una tendencia \textbf{cuadrática}.\\[2ex]
+			\pause
+			\item \textbf{C3}. Se asume que la RIM sigue una tendencia constante, e igual a la media de las RIM de los \textbf{últimos 3 años} de los que se conoce la incidencia.\\[2ex]
+			\item \textbf{C5}. Se asume que la RIM sigue una tendencia constante, e igual a la media de las RIM de los \textbf{últimos 5 años} de los que se conoce la incidencia.\\[2ex]
+		\end{itemize}
+	\end{block}
+
+\end{frame}
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Método Razón Incidencia Mortalidad}
+
+	\begin{block}{Fase 3. Cálculo incidencia}
+		Para cada sexo, grupo de edad y localización anatómica:
+		\begin{itemize}
+			\item En la fase 1 se ha obtenido la mortalidad del año objetivo. \\[2ex]
+			\item En la fase 2 se ha modelizado la RIM del año objetivo para cada escenario.\\[2ex]
+		\end{itemize}		
+		
+		Podemos calcular el \textbf{número de casos incidentes, para cada sexo, grupo de edad, localización anatómica y escenario}, usando:\\
+		
+		$$\text{RIM} = \dfrac{\text{Casos nuevos de cáncer}}{\text{Defunciones por cáncer}} = \dfrac{N}{D} \Rightarrow N  = \text{RIM} \cdot D $$
+		
+		Posteriormente, se pueden calcular otros indicadores (tasas brutas, tasas estandarizadas por edad, ...)
+	\end{block}
+
+\end{frame}
+
+%--------------------------------------------------
+
+
+\begin{frame}\frametitle{}
+
+\Large{\textbf{Índice}}\\[2ex]
+\normalsize
+\begin{enumerate}
+	\item Cáncer: Incidencia y Mortalidad \\[2ex]
+	\item Método Razón Incidencia Mortalidad \\[2ex]
+	\item \textbf{Validación del método Razón Incidencia Mortalidad} \\[2ex]
+	\item Suavizado exponencial \\[2ex]
+	\item  Estimaciones de la Incidencia de Cáncer en 2018 para Granada \\[2ex]
+	\item Líneas abiertas de trabajo
+\end{enumerate}
+
+\end{frame}
+
+%--------------------------------------------------
+\section{Validación del método RIM}
+\begin{frame}\frametitle{Validación del método RIM}
+
+\vspace{-30pt}
+\begin{block}{Validación método RIM}
+	El método RIM se aplica para cada año entre \textbf{2004} y \textbf{2013}. Posteriormente, \textbf{se compara la estimación obtenida con el valor real observado}.\\
+\end{block}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=1\textwidth]{Figuras/Figura5_primeralinea}
+\end{figure}
+
+\vspace{30pt}
+\begin{figure}
+	\centering
+	\includegraphics[width=1\textwidth]{Figuras/Figura5_leyenda}
+\end{figure}
+
+\pause
+
+\vspace{-133pt}
+\begin{figure}
+	\centering
+	\includegraphics[width=1\textwidth]{Figuras/Figura5_resto}
+\end{figure}
+
+\end{frame}
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Validación del método RIM}
+
+\begin{block}{Fuentes de información}
+	\begin{itemize}
+		\item \textbf{Incidencia}: \textbf{Registro de Cáncer de Granada}. Casos incidentes, 1985-2013, por año, sexo, grupo de edad y localización anatómica.\\[2ex]
+		\item \textbf{Mortalidad}: \textbf{Ministerio de Sanidad, Consumo y Bienestar Social}. Defunciones por cáncer, 1982-2013, por año, sexo, grupo de edad y causa de muerte.\\[2ex]
+		\item \textbf{Población}: \textbf{Instituto Nacional de Estadística}. Población a 1 de Julio, 1982-2013, por año, sexo y grupo de edad.\\[2ex]
+	\end{itemize}
+	Se utiliza Microsoft Access (\textbf{VBA} + \textbf{SQL}) y \textbf{R} para procesar la información y crear los ficheros necesarios.
+\end{block}
+
+\end{frame}
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Validación del método RIM}
+	\begin{block}{Metodología}
+		Se analizan las siguientes localizaciones anatómicas (códigos CIE-10):
+		\begin{table}[]
+			\begin{tabular}{ll}
+				\textbf{Hombres} & \textbf{Mujeres} \\ \hline
+				Colon (C18) & Colon (C18) \\ [1ex]
+				Recto (C19-20) & Recto (C19-20)  \\ [1ex]
+				Pulmón (C33-34) & Pulmón (C33-34) \\ [1ex]
+				Próstata (C61) & Mama (C50) \\ [1ex]
+				Vejiga (C67, D09, D41) & Cuerpo uterino (C54) \\ [1ex]
+				Estómago (C16) & Ovario (C56)\\ [1ex]
+				Otras & Otras \\[1ex]
+			\end{tabular}
+		\end{table}
+	\end{block}
+\end{frame}
+
+
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Validación del método RIM}
+
+\begin{block}{Indicadores de la bondad de ajuste}
+	\textbf{Desviación relativa} (DR) para un escenario $s$:
+	
+	$$ \text{DR} = 100 \cdot \left\lvert \dfrac{E(s) - O}{O}\right\rvert$$\\[2ex]
+	
+	\textbf{Error absoluto porcentual medio} (MAPE, por sus siglas en inglés: \textit{Mean Absolute Percentage Error}) como:
+	
+	$$\text{MAPE}(s) =  \dfrac{100}{10} \sum_{i = 2004}^{2013} \left\lvert \dfrac{E_i(s)-O_i}{O_i} \right\lvert$$\\[2ex]
+	
+	{\centering
+	$s_1$ es \textbf{mejor escenario} que $s_2$ $\iff$ $\text{MAPE}(s_1) < \text{MAPE}(s_2)$\\[2ex]}
+	
+	El mejor escenario será entonces aquel que obtenga el menor MAPE.
+\end{block}
+
+\end{frame}
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Validación del método RIM}
+
+\begin{block}{Cáncer de pulmón en hombres, provincia de Granada, 2004-2013}
+	\small  Número de casos observados y estimados por dos escenarios (C3 y L).
+	\vspace{-10pt}
+	\begin{center}
+		\begin{tikzpicture}
+		\node[align=center, inner sep=0] (image) at (0,0) {\includegraphics[width=1\textheight]{Figuras/comparacion_escenarios.pdf}}; 
+		\end{tikzpicture}
+	\end{center}
+\end{block}
+
+\end{frame}
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Validación del método RIM}
+
+	\begin{block}{Cáncer de pulmón en hombres, provincia de Granada, 2004-2013}
+		\small  Número de casos observados y estimados por dos escenarios (C3 y L).
+		\vspace{-10pt}
+		\begin{center}
+			\begin{tikzpicture}
+				\node[align=center, inner sep=0] (image) at (0,0) {\includegraphics[width=1\textheight]{Figuras/comparacion_escenarios.pdf}};
+				\node[align=left, font={\footnotesize}] at (0,-0.33) {\textbf{MAPE(C3) = 4,5}}; % at (image.center)
+				\node[align=left, font={\footnotesize}] at (0,-0.8) {MAPE(L)  = 5,5}; % at (image.center)
+			\end{tikzpicture}
+		\end{center}
+	\end{block}
+	
+\end{frame}
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Validación del método RIM}
+
+\vspace{-10pt}
+\begin{table}[H]
+	\small
+	\centering 
+	\begin{tabular}{llrrrrl}
+		\hline
+		\textbf{Sexo} & \begin{tabular}[l]{@{}l@{}}\textbf{Localización}\\ \textbf{anatómica}\end{tabular} & \textbf{Obs.} & \textbf{Est.} & \textbf{DR} & \textbf{MAPE} & \begin{tabular}[l]{@{}l@{}}\textbf{Mejor}\\ \textbf{escenario}\end{tabular}\\ \hline
+		\multirow{8}{*}{Hombres}	 & Colon & 1.963 & 1.888 & 3,8 & 8,6 & C3\\
+		& Recto & 1.084 & 985 & 9,1 & 16,8 & C3\\
+		& Pulmón & 3.391 & 3.339 & 1,5 & 4,5 & C3\\
+		& Próstata & 4.424 & 4.936 & 11,6 & 27,4 & L\\
+		& Vejiga  & 2.635 & 2.594 & 1,6 & 8,5 & C1\\
+		& Estómago & 801 & 760 & 5,1 & 14,1 & C5\\
+		& Otros & 8.899 & 8.624 & 3,1 & 3,5 & C3\\
+		& Total & 23.197 & 23.126 & 0,3 & 6,3 & \\  \hline
+				\multirow{8}{*}{Mujeres}	 & Colon & 1.467 & 1.413 & 3,7 & 10,0 & C5\\
+		& Recto & 669 & 615 & 8,1 & 19,2 & C3\\
+		& Pulmón & 557 & 487 & 12,6 & 18,3 & L\\
+		& Mama & 4.220 & 4.082 & 3,3 & 14,8 & C3\\
+		& Cuerpo uterino & 1.134 & 1.262 & 11,3 & 17,3 & C5\\
+		& Ovario & 615 & 703 & 14,3 & 18,9 & L\\
+		& Otros & 7.989 & 8.012 & 0,3 & 8,7 & L\\
+		& Total & 16.651 & 16.574 & 0,5 & 3,8&\\ \hline
+	\end{tabular}
+\end{table}
+
+\end{frame}
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Validación del método RIM}
+
+Colon, mujeres, escenario C5. MAPE = 10,0
+\begin{figure}
+	\centering
+	\includegraphics[width=.85\textwidth]{Figuras/colon_mujeres}
+\end{figure}
+
+\end{frame}
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Validación del método RIM}
+
+Pulmón, hombres, escenario C3. MAPE = 4,5
+\begin{figure}
+	\centering
+	\includegraphics[width=.85\textwidth]{Figuras/pulmon_hombres}
+\end{figure}
+
+\end{frame}
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Validación del método RIM}
+
+	\begin{block}{Conclusiones}
+		\begin{itemize}
+			\item El MAPE \textbf{proporciona el mejor escenario} para cada localización anatómica y sexo, así como \textbf{una medida cuantitativa de la bondad de ajuste} de esa estimación. Se mejoran así métodos subjetivos implantados en la actualidad.\\[2ex]
+			\item El escenario Q no es adecuado (en Granada), pese a usarse en estimaciones nacionales.\\[2ex]
+			\item El método RIM es menos preciso con pocos casos incidentes o defunciones, o ante \textbf{cambios repentinos en la evolución de la RIM} (programas de cribado).
+		\end{itemize}
+	\end{block}
+
+\end{frame}
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Validación del método RIM}
+
+\begin{block}{Relación DR - Número medio anual de casos observados}
+	\begin{figure}
+		\centering
+		\includegraphics[width=.9\textwidth]{Figuras/figura8.png}
+	\end{figure}
+\end{block}
+
+\end{frame}
+
+% hombres, mayores de 50 años -> PSA, desde 1997.
+% PSA =  antígeno prostático específico
+% Biopsia transrectal tras PSA positivo
+% Muchos cánceres latentes
+% Sobrediagnóstico y adelanto diagnóstico
+% Gran aumento en incidencia +6.3% 1985-2013
+% Mortalidad estable (-0,4%)
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Validación del método RIM}
+
+Próstata, escenario L. MAPE = 27,4
+\begin{figure}
+	\centering
+	\includegraphics[width=0.85\textwidth]{Figuras/prostata_hombres}
+\end{figure}
+
+\end{frame}
+
+
+%--------------------------------------------------
+
+
+\begin{frame}\frametitle{Validación del método RIM}
+\vspace{-10pt}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.85\textwidth]{Figuras/prostata_menos5}
+\end{figure}
+
+\end{frame}
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Validación del método RIM}
+\vspace{-10pt}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.85\textwidth]{Figuras/prostata}
+\end{figure}
+
+\end{frame}
+
+% -------------------------------------------------
+
+\begin{frame}\frametitle{Validación del método RIM}
+
+\begin{block}{Richard J. Ablin, descubridor del PSA}
+	
+	\begin{columns}
+		\begin{column}{0.3\textwidth}
+			\begin{figure}
+				\centering
+				\includegraphics[width=1\textwidth]{Figuras/richard-ablin}
+			\end{figure}
+		\end{column}
+		\begin{column}{0.625\textwidth}	
+			\textit{'I never dreamed that my discovery four decades ago would lead to such a profit-driven public health disaster.\\
+				The medical community must confront reality and stop the inappropriate use of PSA screening. Doing so would save billions of dollars and rescue millions of men from unnecessary, debilitating treatments.'}\\[2ex]
+			
+			- Richard J. Ablin,  \textit{The New York Times}
+		\end{column}
+	\end{columns}
+	
+\end{block}
+
+\end{frame}
+
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Validación del método RIM}
+
+\vspace{-10pt}
+\begin{columns}
+	\begin{column}{0.5\textwidth}
+		\begin{figure}
+			\centering
+			\includegraphics[width=1\textwidth]{Figuras/articulo.png}
+		\end{figure}
+	\end{column}
+	\begin{column}{0.5\textwidth}
+		\begin{figure}
+			\centering
+			\includegraphics[width=1\textwidth]{Figuras/dani_canada}
+		\end{figure}
+	\end{column}
+\end{columns}
+
+\begin{block}{Difusión científica}
+	Artículo enviado a \texttt{BMC Population Health Metrics} (revista indexada JCR, Q1 en 2018 en ``Salud Pública, ambiental y ocupacional").\\ [2ex]
+	
+	Presentado en cinco congresos científicos nacionales e internacionales (Canadá, Italia, Portugal, Valencia, Granada).
+\end{block}
+
+\end{frame}
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{}
+
+	\Large{\textbf{Índice}}\\[2ex]
+	\normalsize
+	\begin{enumerate}
+		\item Cáncer: Incidencia y Mortalidad \\[2ex]
+		\item Método Razón Incidencia Mortalidad \\[2ex]
+		\item Validación del método Razón Incidencia Mortalidad \\[2ex]
+		\item \textbf{Suavizado exponencial} \\[2ex]
+		\item  Estimaciones de la Incidencia de Cáncer en 2018 para Granada \\[2ex]
+		\item Líneas abiertas de trabajo
+	\end{enumerate}
+
+\end{frame}
+
+%--------------------------------------------------
+\section{Suavizado exponencial}
+\begin{frame}\frametitle{Suavizado exponencial}
+
+	\begin{block}{Teoría de suavizado exponencial}
+		Sea $\{x_1, x_2, \dots, x_n\}$ la serie temporal de casos incidentes.\\[2ex]
+		
+		$\{x_t\}$ se puede estimar usando suavizado exponencial como $\{a_t\}$, con:\\[2ex]
+		
+		\begin{math}
+		\left\{
+		\begin{array}{l}
+		a_1 = x_1\\[2ex]
+		a_t = \alpha x_t + (1-\alpha) a_{t-1} = \ldots = \sum_{i=1}^t \alpha (1-\alpha)^{t-i} x_i
+		\end{array}
+		\right.
+		\end{math}\\[2ex]
+		
+siendo $\alpha \in (0, 1]$ el coeficiente de suavizado.\\[2ex]
+		
+		\textbf{Se da más importancia a las observaciones más recientes.}\\
+	
+	\end{block}
+
+\end{frame}
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Suavizado exponencial}
+	
+	\small
+	\begin{block}{Cálculo del mejor coeficiente de suavizado}
+		
+		Se desarrolla un script de R en el que:
+		\begin{enumerate}
+			\item Se proyectan las defunciones usando \textbf{NORDPRED}.
+			\item Se realiza una \textbf{partición del intervalo} $(0, 1]$ en 20 valores que tomará $\alpha$.\\[2ex] %(debido al alto coste computacional: 14 localizaciones $\times$ 10 años $\times$ 20 valores de $\alpha$ = 2.800 estimaciones).\\[2ex]
+			\item Para cada $\alpha$, sexo, localización anatómica y año entre 2004 y 2013, \textbf{se modeliza la RIM usando suavizado exponencial}, desde el año 1985 hasta 5 años antes del año objetivo.
+			\item Se calcula el \textbf{número de casos incidentes} multiplicando RIM modelada por defunciones proyectadas.\\
+			\item Se selecciona el coeficiente de suavizado que \textbf{minimiza el MAPE}.
+		\end{enumerate}
+
+	\end{block}
+
+\end{frame}
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Suavizado exponencial}
+	\begin{columns}
+		\begin{column}{0.5\textwidth}
+		\centering	Cáncer de recto en hombres
+			\begin{figure}
+				\centering
+				\includegraphics[width=1\textwidth]{Figuras/115-20}
+			\end{figure}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+		\centering	Cáncer de recto en mujeres
+		\begin{figure}
+			\centering
+			\includegraphics[width=1\textwidth]{Figuras/615-20}
+		\end{figure}
+	\end{column}
+	\end{columns}
+
+
+\end{frame}
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Suavizado exponencial}
+\begin{columns}
+	\begin{column}{0.5\textwidth}
+		\centering Cáncer de pulmón en hombres\\ (n = 20)
+		\begin{figure}
+			\centering
+			\includegraphics[width=1\textwidth]{Figuras/116-20}
+		\end{figure}
+	\end{column}
+	\begin{column}{0.5\textwidth}
+		\centering Cáncer de pulmón en hombres\\ (n = 100)
+			\begin{figure}
+				\centering
+				\includegraphics[width=1\textwidth]{Figuras/116-100}
+			\end{figure}
+		\end{column}
+\end{columns}
+
+
+\end{frame}
+
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Suavizado exponencial}
+
+Validación de la estimación de la incidencia. Granada, 2004-2013.
+
+\begin{table}[H]
+	\centering 
+	\small
+	\begin{tabular}{llrcrc}
+		& & \multicolumn{2}{c}{\textbf{Método RIM}} & \multicolumn{2}{c}{\textbf{Suavizado exponencial}}  \\ \hline
+		Sexo&\begin{tabular}[l]{@{}l@{}}Localización\\ anatómica\end{tabular}&MAPE&\begin{tabular}[c]{@{}c@{}}Mejor\\ escenario\end{tabular}&MAPE& Mejor $\alpha$\\ \hline
+		\multirow{8}{*}{Hombres}	&Colon&8,6&C3&\textbf{7,3}&\textbf{0,1}\\
+		&Recto&16,8&C3&\textbf{12,5}&\textbf{0,4}\\
+		&Pulmón&\textbf{4,5}&\textbf{C3}&4,6&0,35\\
+		&Próstata&\textbf{27,4}&\textbf{L}&28,9&0,8\\
+		&Vejiga &8,5&C1&\textbf{5,9}&\textbf{0,6}\\
+		&Estómago&14,1&C5&\textbf{13,3}&\textbf{0,15}\\
+		&Otros&\textbf{3,5}&\textbf{C3}&3,9&0,4\\ \hline
+				\multirow{8}{*}{Mujeres}	&Colon&\textbf{10,0}&\textbf{C5}&10,5&1\\
+		&Recto&19,2&C3&\textbf{14,4}&\textbf{0,25}\\
+		&Pulmón&18,3&L&\textbf{15,2}&\textbf{0,5}\\
+		&Mama&14,8&C3&\textbf{13,0}&\textbf{0,2}\\
+		&Cuerpo uterino&\textbf{17,3}&\textbf{C5}&35,8&0,55\\
+		&Ovario&\textbf{18,9}&\textbf{L}&26,2&0,85\\
+		&Otros&\textbf{8,7}&\textbf{L}&11,8&1\\ \hline
+	\end{tabular}
+\end{table}
+\end{frame}
+
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{}
+
+	\Large{\textbf{Índice}}\\[2ex]
+	\normalsize
+	\begin{enumerate}
+		\item Cáncer: Incidencia y Mortalidad \\[2ex]
+		\item Método Razón Incidencia Mortalidad \\[2ex]
+		\item Validación del método Razón Incidencia Mortalidad \\[2ex]
+		\item Suavizado exponencial \\[2ex]
+		\item \textbf{ Estimaciones de la Incidencia de Cáncer en 2018 para Granada} \\[2ex]
+		\item Líneas abiertas de trabajo
+	\end{enumerate}
+
+\end{frame}
+
+%--------------------------------------------------
+\section{ Estimaciones de la Incidencia de Cáncer en 2018 para Granada}
+\begin{frame}\frametitle{Estimaciones de la Incidencia de Cáncer. Granada, 2018}
+
+	\begin{block}{Estimaciones de la Incidencia en 2018 para Granada}
+		Las estimaciones en 2018 para la provincia de Granada son útiles para mejorar la planificación de la atención sanitaria y la vigilancia de la enfermedad.
+	\end{block}
+
+	\begin{block}{Fuentes de información}
+		\begin{itemize}
+			\item \textbf{Incidencia}: \textbf{Registro de Cáncer de Granada}. Casos incidentes de cáncer de Granada, periodo 1985-2013.
+			\item \textbf{Mortalidad}: \textbf{Ministerio de Sanidad, Consumo y Bienestar Social}. Defunciones por cáncer en la provincia de Granada, periodo 1985-2015.
+			\item \textbf{Población}: \textbf{Instituto Nacional de Estadística}. Población a 1 de Julio, periodo 1985-2015. Proyección de población intercensal para 2018.
+		\end{itemize}
+	\end{block}
+
+\end{frame}
+
+%--------------------------------------------------
+\begin{frame}\frametitle{Estimaciones de la Incidencia de Cáncer. Granada, 2018}
+	
+	\begin{block}{Estimaciones con método RIM}
+		\begin{table}[H]
+			\footnotesize
+			\centering 
+			\begin{tabular}{llrrl}
+				\hline
+				\textbf{Sexo}&\begin{tabular}[l]{@{}l@{}}\textbf{Localización}\\ \textbf{anatómica}\end{tabular}&\textbf{N}& \textbf{IC 95}\% & \textbf{Esc}\\ \hline
+				\multirow{8}{*}{Hombres}	&Colon&240 & (206, 275)&C3\\
+				&Recto&117 & (94, 142) &C3\\
+				&Pulmón&342 & (302, 384)&C3\\
+				&Próstata&752 & (672, 839)&L\\
+				&Vejiga &356 & (310, 405)&C1\\
+				&Estómago&64 & (48, 83)&C5\\
+				&Otros&917 & (850, 985)&C3\\
+				&Total&2.788 & (2.482, 3.113)&\\ \hline
+				\multirow{8}{*}{Mujeres}	&Colon&148 & (123, 175)&C5\\
+				&Recto&44 & (31, 60)&C3\\
+				&Pulmón&78 & (55, 106)&L\\
+				&Mama&565 & (513, 620)&C3\\
+				&Cuerpo uterino&133 & (108, 159)&C5\\
+				&Ovario&47 & (31, 67)&L\\
+				&Otros&898 & (817, 982)&L\\
+				&Total  &1.913 & (1.678, 2.169)&\\ \hline
+			\end{tabular}
+		\end{table}
+	\end{block}
+\end{frame}
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Estimaciones de la Incidencia de Cáncer. Granada, 2018}
+	\begin{block}{Estimaciones con método RIM + suavizado exponencial}
+		\begin{table}[H]
+			\footnotesize
+			\centering 
+			\begin{tabular}{llrrl}
+				\hline
+				\textbf{Sexo}&\begin{tabular}[l]{@{}l@{}}\textbf{Localización}\\ \textbf{anatómica}\end{tabular}&\textbf{N}&\textbf{IC 95\%}&\textbf{Escenario}\\ \hline
+				\multirow{8}{*}{Hombres}	&Colon&237 & (158, 316)&$SE_{\alpha = 0,1}$\\
+				&Recto&117 & (38, 195)&$SE_{\alpha = 0,4}$\\
+				&Pulmón&342 & (302, 384)&C3\\
+				&Próstata&752 & (672, 839)&L\\
+				&Vejiga &350 & (209, 492)&$SE_{\alpha = 0,6}$\\
+				&Estómago&66 & (44, 88)&$SE_{\alpha = 0,15}$\\
+				&Otros&917 & (850, 985)&C3\\
+				&Total &2.781 & & \\ \hline
+				\multirow{8}{*}{Mujeres}	&Colon&148 & (123, 175)&C5\\
+				&Recto&51 & (15, 88)&$SE_{\alpha = 0,25}$\\
+				&Pulmón&72 & (16, 129)&$SE_{\alpha = 0,5}$\\
+				&Mama&538 & (402, 674)&$SE_{\alpha = 0,2}$\\
+				&Cuerpo uterino&133 & (108, 159)&C5\\
+				&Ovario&47 & (31, 67)&L\\
+				&Otros&898 & (817, 982)&L\\
+				&Total &1.887 & &\\ \hline
+			\end{tabular}
+		\end{table}
+	\end{block}
+\end{frame}
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Estimaciones de la Incidencia de Cáncer. Granada, 2018}
+	\begin{block}{Estimaciones con método RIM + suavizado exponencial}
+		\begin{itemize}
+			\item \textbf{4.668 nuevos casos de cáncer }en 2018 para la provincia de Granada.
+			\item\textbf{ 59,6\%} de los casos son diagnosticados \textbf{en hombres}.
+			\item Cánceres más frecuentes en hombres: \textbf{próstata} (752 casos), \textbf{vejiga} (350 casos) y \textbf{pulmón} (342 casos).
+			\item Cánceres más frecuentes en mujeres: \textbf{mama} (538 casos), \textbf{colon} (148 casos) y \textbf{cuerpo uterino} (133 casos).
+		\end{itemize}
+	\end{block} \pause
+	\begin{block}{Notas sobre el método}
+		\begin{itemize}
+			\item Las estimaciones para los cánceres de próstata, mama y colon deben ser tomadas con cautela.
+			\item El suavizado exponencial da estimaciones similares ($\pm 7$ casos) al método RIM salvo para cáncer de mama (27 casos menos).
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Estimaciones de la Incidencia de Cáncer. Granada, 2018}
+\vspace{-10pt}
+		\begin{figure}
+			\centering
+			\includegraphics[width=1\textwidth]{Figuras/pulmon}
+		\end{figure}
+
+
+\end{frame}
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Estimaciones de la Incidencia de Cáncer. Granada, 2018}
+\vspace{-10pt}
+
+		\begin{figure}
+			\centering
+			\includegraphics[width=1\textwidth]{Figuras/mama}
+		\end{figure}
+
+\end{frame}
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{}
+
+\Large{\textbf{Índice}}\\[2ex]
+\normalsize
+\begin{enumerate}
+	\item Cáncer: Incidencia y Mortalidad \\[2ex]
+	\item Método Razón Incidencia Mortalidad \\[2ex]
+	\item Validación del método Razón Incidencia Mortalidad \\[2ex]
+	\item Suavizado exponencial \\[2ex]
+	\item Estimaciones de la Incidencia de Cáncer en 2018 para Granada \\[2ex]
+	\item \textbf{Líneas abiertas de trabajo}
+\end{enumerate}
+
+\end{frame}
+
+%--------------------------------------------------
+\section{Líneas abiertas de trabajo}
+\begin{frame}\frametitle{Líneas abiertas de trabajo}
+
+	\begin{block}{Líneas abiertas de trabajo}
+		\begin{itemize}
+			\item \textbf{Proyectos colaborativos multicéntricos}, para tener en cuenta las desigualdades entre regiones, y ganar potencia estadística. \\[2ex]
+			\item \textbf{Método de Brown}, y otras técnicas de análisis de series temporales. \\[2ex]
+			\item \textbf{Actualización periódica de las estimaciones}, para tener datos actualizados en todo momento, de utilidad para la planificación sanitaria.\\[2ex]
+		\end{itemize}
+	\end{block}
+
+\end{frame}
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Referencias bibliográficas}
+
+\vspace{-10pt}
+\begin{columns}
+	\begin{column}{0.5\textwidth}
+		\begin{figure}
+				\centering
+				\includegraphics[width=1\textwidth]{Figuras/redecan2015}
+			\end{figure}
+			\begin{figure}
+				\raggedright
+				\includegraphics[width=0.8\textwidth]{Figuras/redecan}
+			\end{figure}
+	\end{column}
+	\begin{column}{0.5\textwidth}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.85\textwidth]{Figuras/portada_cowp}
+		\end{figure}
+	\end{column}
+
+\end{columns}
+
+\end{frame}
+
+
+%------------------------------------------------
+
+\begin{frame}
+	
+	\Huge{\centerline{Gracias por su atención}}
+	
+	\vspace{20pt}
+	
+	% Logos
+	\begin{columns}
+		\begin{column}{0.17\textwidth}
+			\begin{figure}
+				\centering
+				\includegraphics[width=1\textwidth]{logos/mm.pdf}
+			\end{figure}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{figure}
+				\centering
+				\includegraphics[width=1\textwidth]{logos/logougr.png}
+			\end{figure}
+		\end{column}
+	\end{columns}
+
+	\bigskip
+	
+		\vspace{20pt}
+		
+	\centering
+	\Large
+	Daniel Redondo Sánchez
+	
+	\bigskip
+	
+
+	\normalsize{
+		\begin{columns}
+			\begin{column}{1\textwidth}
+				\centering
+				{\color{blue}{\href{https://danielredondo.com/}{danielredondo.com}}}\\
+				\vspace{5pt}
+				{\color{blue}{\href{mailto:daniel.redondo.easp@juntadeandalucia.es}{daniel.redondo.easp@juntadeandalucia.es}}}
+			\end{column}
+			%\begin{column}{0.4\textwidth}
+			%	\centering
+			%	{\color{blue}{\href{https://twitter.com/dredondosanchez}{@dredondosanchez}}}\\
+			%\end{column}
+		\end{columns}
+		
+	}
+
+\end{frame}
+%------------------------------------------------
+\appendix
+\begin{frame}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\textwidth]{Figuras/Figura6}
+\end{figure}
+
+\end{frame}
+%------------------------------------------------
+
+\begin{frame}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\textwidth]{Figuras/Figura7}
+\end{figure}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.5\textwidth]{Figuras/Figura12.pdf}
+	\end{figure}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\textwidth]{Figuras/Figura13.pdf}
+\end{figure}
+
+\end{frame}
+%------------------------------------------------
+
+\begin{frame}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\textwidth]{Figuras/art1.png}
+\end{figure}
+
+\end{frame}
+%------------------------------------------------
+
+\begin{frame}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\textwidth]{Figuras/art2.png}
+\end{figure}
+
+\end{frame}
+
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Cáncer de próstata. Casos observados 1985-2013}
+\vspace{-10pt}
+\begin{figure}
+\centering
+\includegraphics[width=0.85\textwidth]{Figuras/prostata}
+\end{figure}
+
+\end{frame}
+
+%--------------------------------------------------
+
+\begin{frame}\frametitle{Cáncer de próstata. Casos observados 1985-2008}
+\vspace{-10pt}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.85\textwidth]{Figuras/prostata_menos5}
+\end{figure}
+
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+
+\end{document} 
